@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sysdesign-api
+  labels:
+    app: sysdesign-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sysdesign-api
+  template:
+    metadata:
+      labels:
+        app: sysdesign-api
+    spec:
+      containers:
+        - name: api
+          image: sysdesign-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://sysdesign-postgres:5432/sysdesign
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: sysdesignpass
+            - name: SPRING_DATA_REDIS_HOST
+              value: sysdesign-redis
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sysdesign-secrets
+                  key: jwt-secret
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sysdesign-secrets
+                  key: openai-key
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sysdesign-api
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: sysdesign-api

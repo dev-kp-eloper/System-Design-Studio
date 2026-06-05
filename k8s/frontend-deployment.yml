@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sysdesign-studio
+  labels:
+    app: sysdesign-studio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sysdesign-studio
+  template:
+    metadata:
+      labels:
+        app: sysdesign-studio
+    spec:
+      containers:
+        - name: studio
+          image: sysdesign-studio:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_API_URL
+              value: "http://sysdesign-api:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sysdesign-studio
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: sysdesign-studio
+  type: ClusterIP

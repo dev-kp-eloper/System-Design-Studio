@@ -1,0 +1,12 @@
+package com.sysdesign;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SysDesignApiApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SysDesignApiApplication.class, args);
+    }
+}

@@ -1,0 +1,74 @@
+Implemented Phase 1 frontend scaffold for SysDesign Studio under [sysdesign-studio](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio>).
+
+Built pieces:
+- Vite + React 18 + TypeScript + Tailwind setup
+- Component model in [components.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/types/components.ts>)
+- Zustand architecture store with localStorage persistence in [architectureStore.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/store/architectureStore.ts>)
+- ReactFlow canvas, drag/drop palette, custom infra nodes, toolbar, simulation panel
+- Initial frontend BFS simulator in [SimulationEngine.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/engine/SimulationEngine.ts>)
+- STOMP hook placeholder for the decided future WebSocket path
+- `.gitignore` for generated files
+
+Verification:
+- `npm install` completed successfully.
+- `npm run build` passed.
+- Dev server is running at [http://localhost:5173/](http://localhost:5173/).
+- Root page responds with HTTP `200`.
+- In-app browser visual smoke test was blocked because the browser-control runtime crashed before connecting, but the app server and production build are healthy.
+
+Notes:
+- `npm audit` reports 2 moderate dependency findings; I did not force-upgrade because that could introduce breaking dependency changes.
+- Next logical file/step: continue Phase 2 by expanding [SimulationEngine.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/engine/SimulationEngine.ts>) into the full request simulator behavior and then tighten `SimulationPlayer` animation around those steps.
+
+
+
+
+Continued into **Phase 2: Request Simulator (Frontend)**.
+
+Implemented:
+- Expanded [SimulationEngine.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/engine/SimulationEngine.ts>) into a proper local BFS simulator with `SimulationEngine`, node labels, cache hit/miss counts, async event counts, critical path, and summary output.
+- Updated [architectureStore.ts](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/store/architectureStore.ts>) with HTTP request state, last simulation result, and clean simulation status handling.
+- Upgraded [Toolbar.tsx](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/components/Toolbar.tsx>) with request input, request presets, speed controls, and playback wiring.
+- Upgraded [SimulationPlayer.tsx](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/components/SimulationPlayer.tsx>) with live metrics, auto-scroll, node labels, final summary, and critical path display.
+
+Verification:
+- `npm run build` passed.
+- Local app responds at [http://localhost:5173/](http://localhost:5173/).
+- Browser smoke test confirmed the UI renders with request presets, simulation metrics, canvas, and palette.
+
+To run/test:
+```bash
+cd "C:\Users\deves\Documents\System Design Studio\sysdesign-studio"
+npm run dev
+```
+
+Next logical file: continue polishing [ArchitectureCanvas.tsx](</C:/Users/deves/Documents/System Design Studio/sysdesign-studio/src/components/ArchitectureCanvas.tsx>) so simulation playback also highlights traversed edges and completed node statuses more clearly.
+
+
+
+Started Phase 3 and scaffolded the Spring Boot backend in [sysdesign-api](</C:/Users/deves/Documents/System Design Studio/sysdesign-api>).
+
+Implemented:
+- Maven/Spring Boot 3.2 Java 21 project: [pom.xml](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/pom.xml>)
+- App config: [application.yml](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/src/main/resources/application.yml>)
+- Common response/error handling: [ApiResponse.java](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/src/main/java/com/sysdesign/common/ApiResponse.java>), [GlobalExceptionHandler.java](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/src/main/java/com/sysdesign/common/GlobalExceptionHandler.java>)
+- JWT auth stack: `AuthController`, `AuthService`, `JwtService`, `JwtAuthFilter`, `SecurityConfig`, `AuthBeansConfig`, `User`, `UserRepository`
+- Architecture CRUD: `Architecture`, `ArchitectureRepository`, `ArchitectureService`, `ArchitectureController`, request/response DTOs
+- Test profile with H2: [application-test.yml](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/src/test/resources/application-test.yml>)
+
+Verification passed:
+```bash
+cd "C:\Users\deves\Documents\System Design Studio\sysdesign-api"
+$env:JAVA_HOME='C:\Program Files\Java\jdk-25'
+$env:Path="$env:JAVA_HOME\bin;C:\tmp\apache-maven-3.9.9\bin;$env:Path"
+mvn test
+```
+
+Result: `BUILD SUCCESS`, 1 test passing.
+
+To run locally next, you’ll need PostgreSQL running with database/user/password matching `application.yml`, then:
+```bash
+mvn spring-boot:run
+```
+
+Next logical file: implement backend simulation DTOs and `SimulationEngine.java` under [simulation](</C:/Users/deves/Documents/System Design Studio/sysdesign-api/src/main/java/com/sysdesign/simulation>) so the Java backend mirrors the TypeScript BFS simulator.

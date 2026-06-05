@@ -1,0 +1,5 @@
+openai:
+  api:
+    key: ${GROQ_API_KEY:default-key}
+    url: https://api.groq.com/openai/v1/chat/completions
+  model: llama-3.3-70b-versatile
