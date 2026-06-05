@@ -36,6 +36,7 @@ interface ArchitectureStore {
   setSimulating: (v: boolean) => void;
   setSpeed: (s: SimulationSpeed) => void;
   clearCanvas: () => void;
+  deleteNode: (id: string) => void;
   toggleReviewPanel: () => void;
 }
 
@@ -154,6 +155,16 @@ export const useArchitectureStore = create<ArchitectureStore>((set, get) => ({
       simulationResult: null,
       activeSimulationNodeId: null,
       isSimulating: false,
+    });
+  },
+  deleteNode: (id) => {
+    const nodes = get().nodes.filter((node) => node.id !== id);
+    const edges = get().edges.filter((edge) => edge.source !== id && edge.target !== id);
+    persistArchitecture(nodes, edges);
+    set({
+      nodes,
+      edges,
+      selectedNodeId: get().selectedNodeId === id ? null : get().selectedNodeId,
     });
   },
   toggleReviewPanel: () => set((state) => ({ isReviewPanelOpen: !state.isReviewPanelOpen })),

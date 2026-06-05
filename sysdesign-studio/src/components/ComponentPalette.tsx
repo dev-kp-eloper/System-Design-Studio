@@ -10,6 +10,7 @@ import {
   IconWorld,
   IconArrowsSplit,
   IconArrowLeft,
+  IconTrash,
 } from '@tabler/icons-react';
 import { COMPONENT_DEFINITIONS, type ComponentDefinition } from '../types/components';
 import { useArchitectureStore } from '../store/architectureStore';
@@ -28,7 +29,7 @@ const iconMap: Record<ComponentDefinition['icon'], typeof IconWorld> = {
 };
 
 export function ComponentPalette() {
-  const { selectedNodeId, nodes, updateNodeData, setSelectedNode } = useArchitectureStore();
+  const { selectedNodeId, nodes, updateNodeData, setSelectedNode, deleteNode } = useArchitectureStore();
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
 
   return (
@@ -93,6 +94,17 @@ export function ComponentPalette() {
                 onChange={(e) => updateNodeData(selectedNode.id, { replicas: parseInt(e.target.value) || 1 })}
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
               />
+            </div>
+
+            <div className="pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => deleteNode(selectedNode.id)}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2.5 px-4 transition text-sm cursor-pointer"
+              >
+                <IconTrash className="h-4 w-4" />
+                Delete Component
+              </button>
             </div>
           </div>
         </>

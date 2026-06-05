@@ -119,6 +119,18 @@ export function ArchitectureCanvas() {
     [localEdges, onEdgesChange, setEdges],
   );
 
+  const onNodesDelete = useCallback(
+    (deletedNodes: Node[]) => {
+      const deletedIds = new Set(deletedNodes.map((n) => n.id));
+      const nextEdges = localEdges.filter(
+        (edge) => !deletedIds.has(edge.source) && !deletedIds.has(edge.target)
+      );
+      setLocalEdges(nextEdges);
+      setEdges(nextEdges);
+    },
+    [localEdges, setEdges, setLocalEdges],
+  );
+
   const proOptions = useMemo(() => ({ hideAttribution: true }), []);
 
   return (
@@ -129,6 +141,7 @@ export function ArchitectureCanvas() {
         nodeTypes={nodeTypes}
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
+        onNodesDelete={onNodesDelete}
         onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}
