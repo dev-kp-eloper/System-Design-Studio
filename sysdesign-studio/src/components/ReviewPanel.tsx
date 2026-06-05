@@ -3,7 +3,11 @@ import { IconX } from '@tabler/icons-react';
 // Assuming you have an axios instance setup, if not using native fetch
 // import api from '../api'; 
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const getApiUrl = () => {
+  const base = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+  return base.endsWith('/api') ? base : `${base}/api`;
+};
+const API_URL = getApiUrl();
 
 interface ArchitectureReview {
   issues: { severity: 'critical' | 'warning' | 'info'; component: string; message: string }[];
