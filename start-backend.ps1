@@ -8,7 +8,7 @@ if (Test-Path ".env") {
         if ($line -and -not $line.StartsWith("#")) {
             $key, $val = $line -split '=', 2
             if ($key -and $val) {
-                $env:$($key.Trim()) = $val.Trim()
+                [System.Environment]::SetEnvironmentVariable($key.Trim(), $val.Trim(), "Process")
             }
         }
     }
